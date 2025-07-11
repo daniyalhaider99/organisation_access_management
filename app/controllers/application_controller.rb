@@ -16,8 +16,10 @@ class ApplicationController < ActionController::Base
   end
 
   def check_ability
-    # Skip for admin controllers
+    # Skip for admin controllers and Devise controllers
     return if self.class.name.start_with?("Admin::")
+    return if self.class.name.start_with?("Dashboard")
+    return if devise_controller?
     return unless user_signed_in?
 
     resource_name = controller_name.classify
