@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", media: "all" %>
+    <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" %>
+
     <title><%= content_for(:title) || "Organisation Access Management" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -8,6 +11,57 @@
     <%= csp_meta_tag %>
 
     <%= yield :head %>
+
+    <% if user_signed_in? %>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container">
+          <%= link_to 'Dashboard', root_path, class: 'navbar-brand' %>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item me-2">
+                <% if policy(User).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+                  <%= link_to 'Users', users_path, class: 'nav-link' %>
+                <% end %>
+              </li>
+              <% if current_user&.admin? %>
+                <li class="nav-item me-2">
+                  <%= link_to 'Assign Roles', admin_abilities_path, class: 'nav-link' %>
+                </li>
+              <% end %>
+              <li class="nav-item me-2">
+                <% if policy(Membership).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+                  <%= link_to 'Memberships', memberships_path, class: 'nav-link' %>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <% if policy(Organization).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+                  <%= link_to 'Organizations', organizations_path, class: 'nav-link' %>
+                <% end %>
+              </li>
+              <li class="nav-item ms-3">
+                <% if policy(Proposal).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+                  <%= link_to 'Proposals', proposals_path, class: 'nav-link' %>
+                <% end %>
+              </li>
+              <li class="nav-item ms-3">
+                <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger', form: { class: 'd-inline' } %>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <% if user_signed_in? && (current_user.child? || current_user.teen?) && !current_user.parental_consent? %>
+      <div class="container">
+        <div class="alert alert-warning text-center">
+          No parental access given. Please ask your parent or guardian to provide consent to access the platform features.
+        </div>
+      </div>
+    <% end %>
 
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icon.png" type="image/png">
@@ -18,6 +72,17 @@
   </head>
 
   <body>
+    <% flash.each do |key, value| %>
+      <% alert_class = case key.to_sym
+        when :notice then 'alert-success'
+        when :alert then 'alert-danger'
+        else 'alert-info'
+      end %>
+      <div class="alert <%= alert_class %> alert-dismissible fade show m-3" role="alert">
+        <%= value %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
     <%= yield %>
   </body>
 </html>

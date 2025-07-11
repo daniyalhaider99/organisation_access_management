@@ -1,0 +1,39 @@
+<div class="container mt-5">
+  <div class="card border-primary shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title text-primary"><%= @organization.name %></h2>
+      <% if @organization.minimum_age && @organization.minimum_age > 0 %>
+        <p><strong>Minimum Age to Join:</strong> <%= @organization.minimum_age %></p>
+      <% end %>
+      <p><strong>Description:</strong> <%= @organization.participation_rules["description"] %></p>
+      <% if !@organization.allows_participation?(current_user) %>
+        <div class="alert alert-warning">You do not meet the participation requirements for this organization.</div>
+      <% end %>
+      <% unless (current_user.child? || current_user.teen?) && !current_user.parental_consent? %>
+        <%= link_to 'Analytics', analytics_organization_path(@organization), class: 'btn btn-outline-info mt-2' %>
+      <% end %>
+      <% unless @organization.users.include?(current_user) %>
+        <% if @organization.allows_participation?(current_user) %>
+          <%= button_to 'Join', memberships_path(organization_id: @organization.id), method: :post, class: 'btn btn-primary mt-2 ms-2' %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="mt-4">
+    <h4 class="text-info">Members</h4>
+    <ul class="list-group mb-3">
+      <% @organization.users.each do |user| %>
+        <li class="list-group-item"><%= user.name %> (<%= user.determine_age_group.titleize %>)</li>
+      <% end %>
+    </ul>
+    <h4 class="text-info">Proposals</h4>
+    <ul class="list-group">
+      <% @organization.proposals.each do |proposal| %>
+        <li class="list-group-item">
+          <%= link_to proposal.title, proposal_path(proposal), class: 'text-decoration-none' %>
+          <span class="badge bg-secondary ms-2"><%= proposal.age_group.titleize %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

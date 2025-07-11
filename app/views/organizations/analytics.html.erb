@@ -1,0 +1,47 @@
+<% if (current_user.child? || current_user.teen?) && !current_user.parental_consent? %>
+  <div class="container mt-5">
+    <div class="alert alert-warning text-center">
+      No parental access given. Please ask your parent or guardian to provide consent to access the platform features.
+    </div>
+  </div>
+<% else %>
+  <div class="container mt-5">
+    <h2 class="mb-4 text-primary">Organization Analytics</h2>
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card border-info">
+          <div class="card-body">
+            <h5 class="card-title text-info">Members</h5>
+            <p class="card-text display-6"><%= @stats[:member_count] %></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-success">
+          <div class="card-body">
+            <h5 class="card-title text-success">Proposals</h5>
+            <p class="card-text display-6"><%= @stats[:proposal_count] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4 class="text-info">Proposals by Age Group</h4>
+    <ul class="list-group mb-3">
+      <% @stats[:proposals_by_age_group].each do |age_group, count| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><%= age_group.titleize %></span>
+          <span class="badge bg-info rounded-pill"><%= count %></span>
+        </li>
+      <% end %>
+    </ul>
+    <h4 class="text-info">Members by Role</h4>
+    <ul class="list-group">
+      <% @stats[:members_by_role].each do |role, count| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><%= role.titleize %></span>
+          <span class="badge bg-primary rounded-pill"><%= count %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

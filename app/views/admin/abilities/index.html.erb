@@ -1,0 +1,106 @@
+<div class="container py-4">
+  <div class="row mb-3 sticky-top bg-white pt-3 pb-2" style="z-index: 100;">
+    <div class="col-md-6">
+      <h2 class="mb-0">Manage Abilities</h2>
+      <small class="text-muted">Set which actions are allowed for each age group and resource.</small>
+    </div>
+    <div class="col-md-6 d-flex align-items-center justify-content-end">
+      <%= form_with url: admin_abilities_path, method: :get, local: true, class: 'mb-0' do %>
+        <div class="form-group mb-0">
+          <label for="age_group" class="me-2">Select Age Group:</label>
+          <%= select_tag :age_group, options_for_select(@age_groups, @selected_age_group), onchange: 'this.form.submit();', class: 'form-select d-inline-block w-auto' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Resource \ Action</th>
+              <% @actions.each do |action| %>
+                <th class="text-center"><%= action.titleize %></th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @resources.each do |resource| %>
+              <tr>
+                <td><strong><%= resource %></strong></td>
+                <% @actions.each do |action| %>
+                  <td class="text-center">
+                    <div class="form-check form-switch d-flex justify-content-center">
+                      <%= check_box_tag "ability_#{resource}_#{action}", @abilities[[resource, action]][:allowed], @abilities[[resource, action]][:allowed],
+                        data: {
+                          resource: resource,
+                          action: action,
+                          age_group: @selected_age_group,
+                          allowed: @abilities[[resource, action]][:allowed],
+                          id: @abilities[[resource, action]][:id]
+                        },
+                        class: 'form-check-input ability-switch',
+                        id: "switch_#{resource}_#{action}" %>
+                    </div>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast for feedback -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="abilityToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          Ability updated successfully.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.ability-switch').forEach(function(switchEl) {
+      switchEl.addEventListener('change', function() {
+        debugger
+        const el = this;
+        el.disabled = true;
+        fetch('<%= update_admin_abilities_path %>', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            id: el.dataset.id,
+            resource_type: el.dataset.resource,
+            action: el.dataset.action,
+            age_group: el.dataset.age_group,
+            allowed: el.checked
+          })
+        }).then(function(response) {
+          el.disabled = false;
+          if (response.ok) {
+            var toastEl = document.getElementById('abilityToast');
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+          } else {
+            alert('Failed to update ability.');
+          }
+        }).catch(function() {
+          el.disabled = false;
+          alert('Failed to update ability.');
+        });
+      });
+    });
+  });
+</script>

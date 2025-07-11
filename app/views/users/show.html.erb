@@ -1,0 +1,29 @@
+<div class="container mt-5">
+  <div class="card border-info shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title text-info"><%= @user.name %></h2>
+      <p><strong>Email:</strong> <%= @user.email %></p>
+      <p><strong>Age:</strong> <%= @user.age %> (<%= @user.determine_age_group.titleize %>)</p>
+      <h4 class="mt-4 text-primary">Organizations</h4>
+      <ul class="list-group mb-3">
+        <% @user.organizations.each do |org| %>
+          <li class="list-group-item">
+            <%= link_to org.name, organization_path(org), class: 'text-decoration-none' %>
+            <span class="badge bg-secondary ms-2">Role: <%= @user.memberships.find_by(organization: org)&.role&.titleize %></span>
+          </li>
+        <% end %>
+      </ul>
+      <h4 class="text-primary">Proposals</h4>
+      <ul class="list-group">
+        <% @user.organizations.each do |org| %>
+          <% org.proposals.where(age_group: @user.determine_age_group).each do |proposal| %>
+            <li class="list-group-item">
+              <%= link_to proposal.title, proposal_path(proposal), class: 'text-decoration-none' %>
+              <span class="badge bg-info ms-2"><%= org.name %></span>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

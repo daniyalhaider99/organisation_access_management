@@ -1,0 +1,18 @@
+<div class="container mt-5">
+  <h2 class="mb-4 text-primary">Create New Organization</h2>
+  <%= form_with model: @organization, local: true do |form| %>
+    <div class="mb-3">
+      <%= form.label :name, class: 'form-label' %>
+      <%= form.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :minimum_age, class: 'form-label' %>
+      <%= form.number_field :minimum_age, class: 'form-control', min: 0 %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :description, class: 'form-label' %>
+      <%= form.text_area :participation_rules_description, class: 'form-control', value: @organization.participation_rules["description"] %>
+    </div>
+    <%= form.submit 'Create Organization', class: 'btn btn-success' %>
+  <% end %>
+</div>

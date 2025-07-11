@@ -1,0 +1,30 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+    <div class="text-center mb-4">
+      <img src="/icon.svg" alt="Logo" width="48" height="48" class="mb-2">
+      <h2 class="h4 mb-0">Change your password</h2>
+      <p class="text-muted small">Set a new password for your account</p>
+    </div>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+      <%= render "users/shared/error_messages", resource: resource %>
+      <%= f.hidden_field :reset_password_token %>
+      <div class="mb-3">
+        <%= f.label :password, "New password", class: "form-label" %>
+        <% if @minimum_password_length %>
+          <em class="text-muted small">(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %>
+        <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-control" %>
+      </div>
+      <div class="mb-3">
+        <%= f.label :password_confirmation, "Confirm new password", class: "form-label" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
+      </div>
+      <div class="d-grid mb-2">
+        <%= f.submit "Change my password", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+    <div class="text-center mt-3">
+      <%= render "users/shared/links" %>
+    </div>
+  </div>
+</div>

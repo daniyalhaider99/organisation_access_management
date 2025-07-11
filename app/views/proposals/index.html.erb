@@ -1,0 +1,19 @@
+<div class="container mt-5">
+  <h2 class="mb-4 text-primary">Proposals for <%= current_user.determine_age_group.titleize %> Group</h2>
+  <%= link_to 'New Proposal', new_proposal_path, class: 'btn btn-success mb-3' %>
+  <div class="row">
+    <% @proposals.each do |proposal| %>
+      <div class="col-md-6 mb-3">
+        <div class="card border-info shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-info"><%= proposal.title %></h5>
+            <p class="card-text"><%= proposal.description.truncate(100) %></p>
+            <p class="card-text"><strong>Organization:</strong> <%= proposal.organization.name %></p>
+            <span class="badge bg-secondary"><%= proposal.age_group.titleize %></span>
+            <%= link_to 'View', proposal_path(proposal), class: 'btn btn-outline-primary ms-2' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

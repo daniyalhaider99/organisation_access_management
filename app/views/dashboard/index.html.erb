@@ -1,0 +1,66 @@
+<div class="container mt-5">
+  <div class="row mb-4">
+    <% if policy(Proposal).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+      <div class="col-md-3">
+        <div class="card border-primary shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary">Total Proposals</h5>
+            <p class="display-6"><%= policy_scope(Proposal).count %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <% if policy(User).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+      <div class="col-md-3">
+        <div class="card border-success shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-success">Total Users</h5>
+            <p class="display-6"><%= policy_scope(User).count %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <% if policy(Membership).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+      <div class="col-md-3">
+        <div class="card border-info shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-info">Total Memberships</h5>
+            <p class="display-6"><%= policy_scope(Membership).count %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <% if policy(Organization).index? && !((current_user.child? || current_user.teen?) && !current_user.parental_consent?) %>
+      <div class="col-md-3">
+        <div class="card border-secondary shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-secondary">My Organizations</h5>
+            <p class="display-6">
+              <%= current_user.organizations.count %>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if current_user&.admin? || current_user&.age_group == "adult" %>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="card border-warning shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-warning">Users by Age Group</h5>
+            <ul class="list-group list-group-flush">
+              <% User.age_groups.keys.each do |age_group| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span><%= age_group.titleize %></span>
+                  <span class="badge bg-warning text-dark rounded-pill"><%= policy_scope(User).where(age_group: age_group).count %></span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

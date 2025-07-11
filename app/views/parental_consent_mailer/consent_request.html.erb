@@ -1,0 +1,9 @@
+<div style="font-family: Arial, sans-serif; background: #f8f9fa; padding: 2rem; border-radius: 8px; border: 1px solid #e0e0e0; max-width: 600px; margin: 2rem auto;">
+  <h2 style="color: #0d6efd;">Parental Consent Required</h2>
+  <p style="font-size: 1.1rem;">Your child (<strong><%= @user.email %></strong>) has registered for our platform and is under 13 years old.</p>
+  <p style="font-size: 1.1rem;">To allow your child to participate, please provide your consent by clicking the button below:</p>
+  <p style="margin: 2rem 0;">
+    <a href="<%= consent_url(@user) %>" style="background: #0d6efd; color: #fff; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: bold;">Provide Consent</a>
+  </p>
+  <p style="color: #6c757d; font-size: 0.95rem;">If you have any questions, please contact our support team.</p>
+</div>

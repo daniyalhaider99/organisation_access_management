@@ -1,0 +1,23 @@
+<div class="container mt-5">
+  <h2 class="mb-4 text-primary">Organizations</h2>
+  <%= link_to 'Create Organization', new_organization_path, class: 'btn btn-success mb-3' %>
+  <div class="row">
+    <% @organizations.each do |org| %>
+      <div class="col-md-6 mb-4">
+        <div class="card border-info shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-info"><%= org.name %></h5>
+            <% if org.minimum_age && org.minimum_age > 0 %>
+              <p class="card-text"><strong>Minimum Age:</strong> <%= org.minimum_age %></p>
+            <% end %>
+            <p class="card-text"><%= org.participation_rules["description"] %></p>
+            <%= link_to 'View', organization_path(org), class: 'btn btn-outline-primary' %>
+            <% unless org.users.include?(current_user) %>
+              <%= button_to 'Join', memberships_path(organization_id: org.id), method: :post, class: 'btn btn-primary ms-2' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

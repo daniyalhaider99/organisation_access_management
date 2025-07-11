@@ -1,0 +1,19 @@
+<%= form_with(model: proposal, local: true) do |form| %>
+  <div class="mb-3">
+    <%= form.label :title, class: "form-label text-primary" %>
+    <%= form.text_field :title, class: "form-control" %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :description, class: "form-label text-primary" %>
+    <%= form.text_area :description, class: "form-control" %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :organization, class: "form-label text-primary" %>
+    <%= form.collection_select :organization_id, Organization.all, :id, :name, class: "form-select" %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :age_group, class: "form-label text-primary" %>
+    <%= form.select :age_group, User.age_groups.keys.map { |g| [g.titleize, g] }, {}, class: "form-select" %>
+  </div>
+  <%= form.submit class: "btn btn-success" %>
+<% end %>
